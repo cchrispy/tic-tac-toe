@@ -51,20 +51,66 @@ var check = boardState => {
   return false;
 }
 
+// function to print out options and starter questions
+var printOptions = (obj, ...questions) => {
+  questions.forEach(question => print(question));
+  for (let prop in obj) {
+    print(`${ prop }: ${ obj[prop] }`);
+  }
+}
+
+// function to generate the selectable options based on the state
+var genOptions = boardState => {
+  let obj = {};
+  boardState((val, i) => {
+    if (!val) {
+      obj[i] = `Select square ${ i }`;
+    }
+  })
+  return obj;
+}
+
+var init = () => {
+  let obj = {
+    1: 'Yes',
+    2: 'Nah'
+  }
+
+  printOptions(obj, 'New game?');
+
+  prompt.start();
+  prompt.get(['Select an option'], (err, result) => {
+    var option = result['Select an option'];
+    // print('Option selected: ', obj[option]);
+    switch (option) {
+      case '1': {
+        print(render(state));
+        break;
+      }
+      case '2': {
+        print('Okay fine.');
+        break;
+      }
+      default: break;
+    }
+  })
+}
+
+
+
 
 print('* * * * * * * * * * * * * *');
 print('* * * * TIC TAC TOE * * * *');
 print('* * * * * * * * * * * * * *');
 
-print('New game?');
-print('1: Yes');
-print('2: Nah');
+init();
 
-prompt.start();
 
-prompt.get(['Select an option'], (err, result) => {
-  console.log('Option selected: ', result['Select an option']);
-  prompt.get(['hi'], (err, result) => {
-    console.log('RESULT: ', result.hi);
-  })
-})
+// prompt.start();
+
+// prompt.get(['Select an option'], (err, result) => {
+//   console.log('Option selected: ', result['Select an option']);
+//   prompt.get(['hi'], (err, result) => {
+//     console.log('RESULT: ', result.hi);
+//   })
+// })
