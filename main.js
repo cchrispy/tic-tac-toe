@@ -14,6 +14,14 @@ for (var i = 0; i < 9; i ++) {
   state.push(null);
 }
 
+// X goes first
+var player = 'X';
+
+// swap players at the end of each turn
+var swap = () => {
+  player = player === 'X' ? 'Y' : 'X';
+}
+
 // a function to render the state of the board
 var render = boardState => {
   return `
@@ -55,22 +63,30 @@ var check = boardState => {
 var printOptions = (obj, ...questions) => {
   questions.forEach(question => print(question));
   for (let prop in obj) {
-    print(`${ prop }: ${ obj[prop] }`);
+    print(`Choice ${ prop }: ${ obj[prop] }`);
   }
+  print(' ');
 }
 
 // function to generate the selectable options based on the state
 var genOptions = boardState => {
   let obj = {};
-  boardState((val, i) => {
+  boardState.forEach((val, i) => {
     if (!val) {
       obj[i] = `Select square ${ i }`;
     }
   })
+  obj[99] = 'Exit/Quit';
   return obj;
 }
 
+// prompt the user to start a new game
 var init = () => {
+
+  print('* * * * * * * * * * * * * *');
+  print('* * * * TIC TAC TOE * * * *');
+  print('* * * * * * * * * * * * * *');
+
   let obj = {
     1: 'Yes',
     2: 'Nah'
@@ -85,6 +101,7 @@ var init = () => {
     switch (option) {
       case '1': {
         print(render(state));
+        cycle();
         break;
       }
       case '2': {
@@ -96,21 +113,35 @@ var init = () => {
   })
 }
 
+// A turn cycle
+var cycle = () => {
+  var options = genOptions(state);
+  printOptions(options, `${ player }'s turn`);
+  select(options);
+}
 
+// Prompts the player to make a move
+var select = (options) => {
+  prompt.get(['Select a choice'], (err, result) => {
+    var option = result['Select a choice'];
+    if (option === '99') {
+      print('Goodbye!');
+      return;
+    }
 
+    if (options[option]) {
+      var b = Number(option);
+      state[b] = player;
+      print(`Player ${ player } selected square ${ option }`);
+      print(render(state));
+      swap();
+      cycle();
+    } else {
+      print('Invalid choice. Try again.');
+      select(options);
+    }
+  })
+}
 
-print('* * * * * * * * * * * * * *');
-print('* * * * TIC TAC TOE * * * *');
-print('* * * * * * * * * * * * * *');
 
 init();
-
-
-// prompt.start();
-
-// prompt.get(['Select an option'], (err, result) => {
-//   console.log('Option selected: ', result['Select an option']);
-//   prompt.get(['hi'], (err, result) => {
-//     console.log('RESULT: ', result.hi);
-//   })
-// })
