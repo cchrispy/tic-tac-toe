@@ -117,6 +117,7 @@ var init = () => {
 var cycle = () => {
   var options = genOptions(state);
   printOptions(options, `${ player }'s turn`);
+  print(' ');
   select(options);
 }
 
@@ -134,8 +135,13 @@ var select = (options) => {
       state[b] = player;
       print(`Player ${ player } selected square ${ option }`);
       print(render(state));
-      swap();
-      cycle();
+      if (!check(state)) {
+        swap();
+        cycle();
+      } else {
+        print(`Player ${ player } wins!`);
+        return;
+      }
     } else {
       print('Invalid choice. Try again.');
       select(options);
