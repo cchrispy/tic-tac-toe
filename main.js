@@ -96,14 +96,16 @@ var init = () => {
     2: 'Nah'
   }
 
-  printOptions(obj, 'New game?');
+  printOptions(obj, ' ','New game?', ' ');
 
   prompt.start();
-  prompt.get(['Select an option'], (err, result) => {
-    var option = result['Select an option'];
+  prompt.get(['Select a choice'], (err, result) => {
+    var option = result['Select a choice'];
     switch (option) {
       case '1': {
         print(render(state));
+        print(`Note: tic-tac-toe squares are numbered 0-8, read from left to right and top to down.`);
+        print(' ');
         cycle();
         break;
       }
@@ -111,7 +113,12 @@ var init = () => {
         print('Okay fine.');
         break;
       }
-      default: break;
+      default: {
+        print('Invalid choice. Try again.');
+        print(' ');
+        init();
+        break;
+      }
     }
   })
 }
