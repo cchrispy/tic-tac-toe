@@ -14,6 +14,10 @@ for (var i = 0; i < 9; i ++) {
   state.push(null);
 }
 
+var reset = () => {
+  state = state.map(_ => null);
+}
+
 // X goes first
 var player = 'X';
 
@@ -97,7 +101,6 @@ var init = () => {
   prompt.start();
   prompt.get(['Select an option'], (err, result) => {
     var option = result['Select an option'];
-    // print('Option selected: ', obj[option]);
     switch (option) {
       case '1': {
         print(render(state));
@@ -140,11 +143,40 @@ var select = (options) => {
         cycle();
       } else {
         print(`Player ${ player } wins!`);
+        again();
         return;
       }
     } else {
       print('Invalid choice. Try again.');
       select(options);
+    }
+  })
+}
+
+var again = () => {
+  print(' ');
+  printOptions({
+    1: 'Yeah!!',
+    2: 'Naw I\'m good.'
+  }, 'Play again?');
+  prompt.get(['Select a choice'], (err, result) => {
+    var option = result['Select a choice'];
+    switch (option) {
+      case '1': {
+        print('Awesome!');
+        reset();
+        print(render(state));
+        cycle();
+        break;
+      }
+      case '2': {
+        print('Suit yourself. Goodbye!');
+        break;
+      }
+      default: {
+        print('Invalid choice. Try again.');
+        again();
+      }
     }
   })
 }
